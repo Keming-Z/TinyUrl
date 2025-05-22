@@ -9,7 +9,8 @@ To run this app locally, you need to run client and server separately.
 4. Retrieve long url from short url. (Clicking on the app or paste it in browser)
 ## Run client
 Go to tinyurl-client folder, and run
-`npm run dev`
+`npm install`
+then `npm run dev`
 ## Run server
 Go to tinyurl-server/WebApplication1 folder, and run
 `dotnet run`

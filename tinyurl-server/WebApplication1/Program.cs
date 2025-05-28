@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.Hosting;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ShortUrlService>();
@@ -29,12 +24,8 @@ app.Lifetime.ApplicationStarted.Register(() =>
     baseUrl = addresses?.FirstOrDefault();
 });
 
-// ────────────────────────────────────────────────────────────────────────────────
-//  REST endpoints 
-// ────────────────────────────────────────────────────────────────────────────────
-
 // POST /api/shorturls  → create
-app.MapPost("/api/shorturls", async (HttpContext ctx, ShortUrlService svc) =>
+app.MapPost("/api/v1/shorturls", async (HttpContext ctx, ShortUrlService svc) =>
 {
     var dto = await ctx.Request.ReadFromJsonAsync<JsonElement>();
     var longUrl = dto.GetProperty("longUrl").GetString();
@@ -63,7 +54,7 @@ app.MapPost("/api/shorturls", async (HttpContext ctx, ShortUrlService svc) =>
 });
 
 // GET /api/shorturls  → list all (with stats)
-app.MapGet("/api/shorturls", (ShortUrlService svc) =>
+app.MapGet("/api/v1/shorturls", (ShortUrlService svc) =>
 {
     // Use the baseUrl captured at startup
     var entries = svc.GetAllEntries()
@@ -78,7 +69,7 @@ app.MapGet("/api/shorturls", (ShortUrlService svc) =>
 });
 
 // DELETE /api/shorturls/{code}  → remove
-app.MapDelete("/api/shorturls/{code}", (string code, ShortUrlService svc) =>
+app.MapDelete("/api/v1/shorturls/{code}", (string code, ShortUrlService svc) =>
     svc.Delete(code) ? Results.NoContent() : Results.NotFound());
 
 // GET /{code}  → redirect & count click

@@ -80,11 +80,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/kemingzeng/Playground/tinyurl/WebApplication1/WebApplication1.csproj",
+      "projectUniqueName": "/Users/kemingzeng/Playground/adroit/tinyurl-server/WebApplication1/WebApplication1.csproj",
       "projectName": "WebApplication1",
-      "projectPath": "/Users/kemingzeng/Playground/tinyurl/WebApplication1/WebApplication1.csproj",
+      "projectPath": "/Users/kemingzeng/Playground/adroit/tinyurl-server/WebApplication1/WebApplication1.csproj",
       "packagesPath": "/Users/kemingzeng/.nuget/packages/",
-      "outputPath": "/Users/kemingzeng/Playground/tinyurl/WebApplication1/obj/",
+      "outputPath": "/Users/kemingzeng/Playground/adroit/tinyurl-server/WebApplication1/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/kemingzeng/.nuget/NuGet/NuGet.Config"

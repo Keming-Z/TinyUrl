@@ -1,35 +1,47 @@
 import { useEffect, useState } from 'react'
+import { API_URL as baseUrl } from './config.ts'
 import './App.css'
 
-const baseUrl = 'http://localhost:5043'
+type urlObj = {
+  longUrl: string;
+  shortCode: string;
+  clicks: number;
+  shortUrl: string;
+}
 
 function App() {
-  const [longUrl, setLongUrl] = useState('')
-  const [code, setCode] = useState('')
-  const [urlList, setUrlList] = useState([])
+  const [longUrl, setLongUrl] = useState<string>('')
+  const [code, setCode] = useState<string>('')
+  const [urlList, setUrlList] = useState<Array<urlObj>>([])
 
   useEffect(() => {
     const fetchUrls = async () => {
-      const response = await fetch(`${baseUrl}/api/shorturls`)
-      const data = await response.json()
-      setUrlList(data)
+      try {
+        const response = await fetch(`${baseUrl}/shorturls`)
+        const data = await response.json()
+        setUrlList(data)
+      } catch (error) {
+        console.error('Error fetching URLs:', error)
+      }
     }
 
     fetchUrls()
   }, [])
 
-  const validateInput = () => {
+  const validateUrl = (input: string): boolean => {
+    console.log('Validating URL:', input);
     let url;
     try {
-      url = new URL(longUrl)
+      url = new URL(input)
     } catch {
       return false;
     }
     return url.protocol === "http:" || url.protocol === "https:";
   }
 
-  const handleSubmit = async () => {
-    if (!validateInput()) {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!validateUrl(longUrl)) {
       alert('Please enter a valid URL');
       setLongUrl('');
       setCode('');
@@ -37,13 +49,17 @@ function App() {
     }
 
     try {
-      const response = await fetch(`${baseUrl}/api/shorturls`, {
+      const response = await fetch(`${baseUrl}/shorturls`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ longUrl, customCode: code }),
       })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
   
       const data = await response.json()
       if (data) setUrlList((prev) => [...prev, { longUrl: data.longUrl, shortCode: data.shortCode, clicks: data.clicks, shortUrl: data.shortUrl }])
@@ -54,9 +70,9 @@ function App() {
     setCode('')
   }
 
-  const handleDelete = async (shortCode) => {
+  const handleDelete = async (shortCode: string) => {
     try {
-      const response = await fetch(`${baseUrl}/api/shorturls/${shortCode}`, {
+      const response = await fetch(`${baseUrl}/shorturls/${shortCode}`, {
         method: 'DELETE',
       })
   
@@ -75,7 +91,7 @@ function App() {
       <div className="App">
         <h1>URL Shortener</h1>
         <form className='short-url-form'>
-          <label for="longUrl">Long URL: <span style={{color:'red'}}>&#42;</span></label>
+          <label htmlFor="longUrl">Long URL: <span style={{color:'red'}}>&#42;</span></label>
           <input
             type="url"
             name="longUrl"
@@ -84,7 +100,7 @@ function App() {
             onChange={(e) => setLongUrl(e.target.value)}
             required
           />
-          <label for="shortCode">Custom Short Code (optional):</label>
+          <label htmlFor="shortCode">Custom Short Code (optional):</label>
           <input
             type="text"
             name='shortCode'

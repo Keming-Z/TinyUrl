@@ -58,9 +58,6 @@ public class ShortUrlService
             throw new ArgumentException("Short code must be 1-16 chars [0-9A-Z a-z] only.");
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    //  Public API
-    // ────────────────────────────────────────────────────────────────────────
     public ShortUrlEntry Create(string longUrl, string? customCode)
     {
         var normalizedUrl = ValidateLongUrl(longUrl);
